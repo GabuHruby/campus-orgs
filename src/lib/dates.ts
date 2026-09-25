@@ -53,3 +53,32 @@ export function timeAgo(iso: string, now: Date = new Date()): string {
   if (hours < 24) return `${hours}h ago`;
   return `${Math.floor(hours / 24)}d ago`;
 }
+
+/** Whole calendar days from `now` to `iso` (negative = past). */
+function dayOffset(iso: string, now: Date): number {
+  return Math.round((startOfDay(new Date(iso)).getTime() - startOfDay(now).getTime()) / DAY);
+}
+
+export function isSameDay(a: string, b: string): boolean {
+  return startOfDay(new Date(a)).getTime() === startOfDay(new Date(b)).getTime();
+}
+
+/** Chat day divider: "Today", "Yesterday", or "Tue, Sep 22". */
+export function dayLabel(iso: string, now: Date = new Date()): string {
+  const days = dayOffset(iso, now);
+  if (days === 0) return 'Today';
+  if (days === -1) return 'Yesterday';
+  return new Date(iso).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+}
+
+/** Chat list timestamp: "3:45 PM" today, "Yesterday", otherwise "Sep 22". */
+export function chatTimestamp(iso: string, now: Date = new Date()): string {
+  const days = dayOffset(iso, now);
+  if (days === 0) return formatTime(iso);
+  if (days === -1) return 'Yesterday';
+  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+export function isPast(iso: string, now: Date = new Date()): boolean {
+  return new Date(iso).getTime() < now.getTime();
+}

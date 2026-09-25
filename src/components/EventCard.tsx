@@ -1,11 +1,11 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { router } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ClubAvatar } from '@/components/ClubAvatar';
 import { PillButton } from '@/components/PillButton';
 import { useAppData } from '@/data/AppDataProvider';
 import { dateTile, formatEventWhen } from '@/lib/dates';
+import { openClub } from '@/lib/nav';
 import { colors, radius, spacing } from '@/theme';
 import type { Club, Event } from '@/types/domain';
 
@@ -23,7 +23,7 @@ export function EventCard({ event, club, showJoin = false }: Props) {
 
   return (
     <Pressable
-      onPress={() => router.push({ pathname: '/event/[id]', params: { id: event.id } })}
+      onPress={() => openClub(club.id)}
       style={({ pressed, hovered }) => [
         styles.card,
         (pressed || hovered) && styles.cardActive,
@@ -31,7 +31,7 @@ export function EventCard({ event, club, showJoin = false }: Props) {
       <View style={styles.header}>
         <Pressable
           style={styles.clubLink}
-          onPress={() => router.push({ pathname: '/club/[id]', params: { id: club.id } })}>
+          onPress={() => openClub(club.id)}>
           <ClubAvatar club={club} size={24} />
           <Text style={styles.clubName} numberOfLines={1}>
             {club.name}

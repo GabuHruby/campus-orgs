@@ -1,8 +1,8 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { router } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { ClubAvatar } from '@/components/ClubAvatar';
+import { openClub } from '@/lib/nav';
 import { colors, spacing } from '@/theme';
 import type { Club } from '@/types/domain';
 
@@ -16,7 +16,7 @@ export function MyClubsRow({ clubs, onFindMore }: Props) {
         <Pressable
           key={club.id}
           style={styles.item}
-          onPress={() => router.push({ pathname: '/club/[id]', params: { id: club.id } })}>
+          onPress={() => openClub(club.id)}>
           <ClubAvatar club={club} size={52} />
           <Text style={styles.name} numberOfLines={2}>
             {club.name}

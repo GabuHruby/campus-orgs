@@ -2,17 +2,32 @@ import { createContext, useCallback, useContext, useEffect, useState, type React
 
 import type { DataRepository } from '@/data/DataRepository';
 import { MockRepository } from '@/data/MockRepository';
-import type { Announcement, Club, DemoUser, Event } from '@/types/domain';
+import type {
+  Announcement,
+  Club,
+  ClubMember,
+  DemoUser,
+  Event,
+  Message,
+  Person,
+} from '@/types/domain';
 
 type Snapshot = {
   clubs: Club[];
   events: Event[];
   announcements: Announcement[];
+  people: Person[];
+  members: ClubMember[];
+  messages: Message[];
   user: DemoUser;
 };
 
 type AppData = Snapshot & {
   clubsById: Map<string, Club>;
+  eventsById: Map<string, Event>;
+  peopleById: Map<string, Person>;
+  /** The person's leader/poster row in that club, if they have one. */
+  roleIn: (clubId: string, personId: string) => ClubMember | undefined;
   isJoined: (clubId: string) => boolean;
   isRsvped: (eventId: string) => boolean;
   toggleJoin: (clubId: string) => Promise<void>;
@@ -25,13 +40,16 @@ const AppDataContext = createContext<AppData | null>(null);
 const defaultRepository: DataRepository = new MockRepository();
 
 async function loadSnapshot(repo: DataRepository): Promise<Snapshot> {
-  const [clubs, events, announcements, user] = await Promise.all([
+  const [clubs, events, announcements, people, members, messages, user] = await Promise.all([
     repo.getClubs(),
     repo.getEvents(),
     repo.getAnnouncements(),
+    repo.getPeople(),
+    repo.getMembers(),
+    repo.getMessages(),
     repo.getCurrentUser(),
   ]);
-  return { clubs, events, announcements, user };
+  return { clubs, events, announcements, people, members, messages, user };
 }
 
 type Props = { children: ReactNode; repository?: DataRepository };
@@ -63,6 +81,10 @@ export function AppDataProvider({ children, repository = defaultRepository }: Pr
   const value: AppData = {
     ...snapshot,
     clubsById: new Map(snapshot.clubs.map((c) => [c.id, c])),
+    eventsById: new Map(snapshot.events.map((e) => [e.id, e])),
+    peopleById: new Map(snapshot.people.map((p) => [p.id, p])),
+    roleIn: (clubId, personId) =>
+      snapshot.members.find((m) => m.clubId === clubId && m.personId === personId),
     isJoined,
     isRsvped,
     toggleJoin: async (clubId) => {

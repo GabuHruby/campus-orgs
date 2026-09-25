@@ -1,10 +1,10 @@
-import { router } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { ClubAvatar } from '@/components/ClubAvatar';
 import { PillButton } from '@/components/PillButton';
 import { useAppData } from '@/data/AppDataProvider';
 import { clubsByPopularity } from '@/lib/feed';
+import { openClub } from '@/lib/nav';
 import { colors, radius, spacing } from '@/theme';
 
 // Desktop-only side panel, like Reddit's "Popular communities".
@@ -20,7 +20,7 @@ export function PopularClubs() {
           <View key={club.id} style={styles.row}>
             <Pressable
               style={styles.clubLink}
-              onPress={() => router.push({ pathname: '/club/[id]', params: { id: club.id } })}>
+              onPress={() => openClub(club.id)}>
               <ClubAvatar club={club} size={32} />
               <View style={styles.text}>
                 <Text style={styles.name} numberOfLines={1}>

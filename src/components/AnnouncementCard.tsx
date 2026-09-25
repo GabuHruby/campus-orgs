@@ -1,8 +1,8 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { router } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { timeAgo } from '@/lib/dates';
+import { openClub } from '@/lib/nav';
 import { colors, radius, spacing } from '@/theme';
 import type { Announcement, Club } from '@/types/domain';
 
@@ -12,7 +12,7 @@ type Props = { announcement: Announcement; club: Club };
 export function AnnouncementCard({ announcement, club }: Props) {
   return (
     <Pressable
-      onPress={() => router.push({ pathname: '/club/[id]', params: { id: club.id } })}
+      onPress={() => openClub(club.id)}
       style={({ pressed }) => [styles.card, pressed && { opacity: 0.85 }]}>
       <View style={styles.header}>
         <Ionicons name="megaphone" size={13} color={colors.primary} />

@@ -54,11 +54,10 @@ export default function TabsLayout() {
         />
         <Tabs.Screen
           name="messages"
-          listeners={demoOnly('Messages')}
           options={{
             title: 'Messages',
-            tabBarIcon: ({ color, size }) => (
-              <Ionicons name="chatbubbles-outline" color={color} size={size} />
+            tabBarIcon: ({ color, size, focused }) => (
+              <Ionicons name={focused ? 'chatbubbles' : 'chatbubbles-outline'} color={color} size={size} />
             ),
           }}
         />

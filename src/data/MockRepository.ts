@@ -1,6 +1,14 @@
 import type { DataRepository } from '@/data/DataRepository';
 import { createSeed, type SeedData } from '@/data/seed';
-import type { Announcement, Club, DemoUser, Event } from '@/types/domain';
+import type {
+  Announcement,
+  Club,
+  ClubMember,
+  DemoUser,
+  Event,
+  Message,
+  Person,
+} from '@/types/domain';
 
 // Tier 1 implementation: in-memory seed data. Counts update on join/RSVP so the UI
 // behaves like a real backend. Persistence (AsyncStorage) is added in a later step.
@@ -21,6 +29,18 @@ export class MockRepository implements DataRepository {
 
   async getAnnouncements(): Promise<Announcement[]> {
     return this.data.announcements.map((a) => ({ ...a }));
+  }
+
+  async getPeople(): Promise<Person[]> {
+    return this.data.people.map((p) => ({ ...p }));
+  }
+
+  async getMembers(): Promise<ClubMember[]> {
+    return this.data.members.map((m) => ({ ...m }));
+  }
+
+  async getMessages(): Promise<Message[]> {
+    return this.data.messages.map((m) => ({ ...m }));
   }
 
   async getCurrentUser(): Promise<DemoUser> {

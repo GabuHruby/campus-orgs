@@ -1,4 +1,12 @@
-import type { Announcement, Club, DemoUser, Event } from '@/types/domain';
+import type {
+  Announcement,
+  Club,
+  ClubMember,
+  DemoUser,
+  Event,
+  Message,
+  Person,
+} from '@/types/domain';
 import { palette } from '@/theme';
 
 // Every date is computed from `now` at runtime, so the demo never shows stale events.
@@ -53,8 +61,52 @@ export type SeedData = {
   clubs: Club[];
   events: Event[];
   announcements: Announcement[];
+  people: Person[];
+  members: ClubMember[];
+  messages: Message[];
   user: DemoUser;
 };
+
+// Club officers. Each club has a leader plus one or two members allowed to post.
+const people: Person[] = [
+  { id: 'p-maria', name: 'Maria Lopez', avatarColor: palette.blue600 },
+  { id: 'p-ethan', name: 'Ethan Park', avatarColor: palette.navy700 },
+  { id: 'p-jake', name: 'Jake Sullivan', avatarColor: palette.blue500 },
+  { id: 'p-priya', name: 'Priya Shah', avatarColor: palette.navy900 },
+  { id: 'p-connor', name: 'Connor Walsh', avatarColor: palette.blue600 },
+  { id: 'p-alex', name: 'Alex Chen', avatarColor: palette.navy700 },
+  { id: 'p-sam', name: 'Sam Rivera', avatarColor: palette.blue500 },
+  { id: 'p-yuki', name: 'Yuki Tanaka', avatarColor: palette.navy900 },
+  { id: 'p-emma', name: 'Emma Brooks', avatarColor: palette.blue600 },
+  { id: 'p-grace', name: 'Grace Kim', avatarColor: palette.navy700 },
+  { id: 'p-luke', name: 'Luke Murphy', avatarColor: palette.blue500 },
+  { id: 'p-noah', name: 'Noah Bennett', avatarColor: palette.navy900 },
+  { id: 'p-ava', name: 'Ava Martinez', avatarColor: palette.blue600 },
+  { id: 'p-olivia', name: 'Olivia Grant', avatarColor: palette.navy700 },
+  { id: 'p-ben', name: 'Ben Carter', avatarColor: palette.blue500 },
+  { id: 'p-sophia', name: 'Sophia Reyes', avatarColor: palette.navy900 },
+  { id: 'p-daniel', name: 'Daniel O’Brien', avatarColor: palette.blue600 },
+];
+
+const members: ClubMember[] = [
+  { clubId: 'sibc', personId: 'p-maria', role: 'leader', title: 'President' },
+  { clubId: 'sibc', personId: 'p-ethan', role: 'leader', title: 'VP Projects' },
+  { clubId: 'sibc', personId: 'p-jake', role: 'poster', title: 'Marketing' },
+  { clubId: 'investment-club', personId: 'p-priya', role: 'leader', title: 'President' },
+  { clubId: 'investment-club', personId: 'p-connor', role: 'poster', title: 'Portfolio Manager' },
+  { clubId: 'irish-devs', personId: 'p-alex', role: 'leader', title: 'President' },
+  { clubId: 'irish-devs', personId: 'p-sam', role: 'poster', title: 'Events' },
+  { clubId: 'japan-club', personId: 'p-yuki', role: 'leader', title: 'President' },
+  { clubId: 'japan-club', personId: 'p-emma', role: 'poster', title: 'Social Chair' },
+  { clubId: 'habitat', personId: 'p-grace', role: 'leader', title: 'President' },
+  { clubId: 'habitat', personId: 'p-luke', role: 'poster', title: 'Build Coordinator' },
+  { clubId: 'club-ultimate', personId: 'p-noah', role: 'leader', title: 'Captain' },
+  { clubId: 'club-ultimate', personId: 'p-ava', role: 'poster', title: 'Treasurer' },
+  { clubId: 'irish-stage', personId: 'p-olivia', role: 'leader', title: 'Artistic Director' },
+  { clubId: 'irish-stage', personId: 'p-ben', role: 'poster', title: 'Marketing' },
+  { clubId: 'pre-law', personId: 'p-sophia', role: 'leader', title: 'President' },
+  { clubId: 'pre-law', personId: 'p-daniel', role: 'poster', title: 'VP Programming' },
+];
 
 export function createSeed(now: Date = new Date()): SeedData {
   const clubs: Club[] = [
@@ -67,6 +119,7 @@ export function createSeed(now: Date = new Date()): SeedData {
       emoji: '🌐',
       avatarColor: palette.blue600,
       memberCount: 612,
+      chatPermission: 'posters',
     },
     {
       id: 'investment-club',
@@ -77,6 +130,7 @@ export function createSeed(now: Date = new Date()): SeedData {
       emoji: '📈',
       avatarColor: palette.green500,
       memberCount: 348,
+      chatPermission: 'posters',
     },
     {
       id: 'irish-devs',
@@ -87,6 +141,7 @@ export function createSeed(now: Date = new Date()): SeedData {
       emoji: '💻',
       avatarColor: palette.navy900,
       memberCount: 275,
+      chatPermission: 'posters',
     },
     {
       id: 'japan-club',
@@ -97,6 +152,7 @@ export function createSeed(now: Date = new Date()): SeedData {
       emoji: '🎌',
       avatarColor: palette.blue500,
       memberCount: 189,
+      chatPermission: 'posters',
     },
     {
       id: 'habitat',
@@ -107,6 +163,7 @@ export function createSeed(now: Date = new Date()): SeedData {
       emoji: '🔨',
       avatarColor: palette.navy700,
       memberCount: 156,
+      chatPermission: 'posters',
     },
     {
       id: 'club-ultimate',
@@ -117,6 +174,7 @@ export function createSeed(now: Date = new Date()): SeedData {
       emoji: '🥏',
       avatarColor: palette.green500,
       memberCount: 94,
+      chatPermission: 'posters',
     },
     {
       id: 'irish-stage',
@@ -127,6 +185,7 @@ export function createSeed(now: Date = new Date()): SeedData {
       emoji: '🎭',
       avatarColor: palette.blue600,
       memberCount: 131,
+      chatPermission: 'posters',
     },
     {
       id: 'pre-law',
@@ -137,6 +196,7 @@ export function createSeed(now: Date = new Date()): SeedData {
       emoji: '⚖️',
       avatarColor: palette.navy900,
       memberCount: 223,
+      chatPermission: 'posters',
     },
   ];
 
@@ -379,6 +439,7 @@ export function createSeed(now: Date = new Date()): SeedData {
     {
       id: 'a1',
       clubId: 'sibc',
+      authorId: 'p-maria',
       title: 'Project applications are open',
       body: 'Applications for fall project teams close Sunday at midnight. Short answers only; no resume required for first-years.',
       postedAt: hoursAgo(now, 3),
@@ -386,6 +447,7 @@ export function createSeed(now: Date = new Date()): SeedData {
     {
       id: 'a2',
       clubId: 'irish-devs',
+      authorId: 'p-alex',
       title: 'Free AWS credits for members',
       body: 'Every member can claim $100 in AWS credits for personal projects. Grab a code at Hack Night or DM an officer.',
       postedAt: hoursAgo(now, 9),
@@ -393,6 +455,7 @@ export function createSeed(now: Date = new Date()): SeedData {
     {
       id: 'a3',
       clubId: 'club-ultimate',
+      authorId: 'p-ava',
       title: 'Team jerseys are in',
       body: 'Pick yours up after practice this week. Bring $25 cash or Venmo the treasurer.',
       postedAt: hoursAgo(now, 20),
@@ -400,6 +463,7 @@ export function createSeed(now: Date = new Date()): SeedData {
     {
       id: 'a4',
       clubId: 'japan-club',
+      authorId: 'p-emma',
       title: 'Volunteers needed for Mochi Night',
       body: 'We need 6 people to help with setup at 7 PM. Volunteers get first pick of mochi fillings.',
       postedAt: hoursAgo(now, 28),
@@ -407,6 +471,7 @@ export function createSeed(now: Date = new Date()): SeedData {
     {
       id: 'a5',
       clubId: 'pre-law',
+      authorId: 'p-daniel',
       title: 'Room change for LSAT session',
       body: 'This week’s LSAT Strategy Session has moved to Hesburgh Library, Room 218.',
       postedAt: hoursAgo(now, 36),
@@ -414,6 +479,7 @@ export function createSeed(now: Date = new Date()): SeedData {
     {
       id: 'a6',
       clubId: 'habitat',
+      authorId: 'p-luke',
       title: 'Waivers due Friday',
       body: 'Anyone signed up for Saturday’s build must submit the online waiver by Friday at 5 PM or you can’t come on site.',
       postedAt: hoursAgo(now, 50),
@@ -421,6 +487,7 @@ export function createSeed(now: Date = new Date()): SeedData {
     {
       id: 'a7',
       clubId: 'investment-club',
+      authorId: 'p-connor',
       title: 'Pitch deck template posted',
       body: 'The updated stock pitch template is in the shared drive. Use it for Pitch Night so judging stays consistent.',
       postedAt: hoursAgo(now, 70),
@@ -428,6 +495,7 @@ export function createSeed(now: Date = new Date()): SeedData {
     {
       id: 'a8',
       clubId: 'irish-stage',
+      authorId: 'p-ben',
       title: 'Audition sides are posted',
       body: 'Sides for the fall show are posted outside Washington Hall and linked in our bio.',
       postedAt: hoursAgo(now, 96),
@@ -442,5 +510,53 @@ export function createSeed(now: Date = new Date()): SeedData {
     rsvpedEventIds: ['e1'],
   };
 
-  return { clubs, events: eventSeeds.map(toEvent), announcements, user };
+  const msg = (
+    id: string,
+    clubId: string,
+    authorId: string,
+    hours: number,
+    body: string,
+    eventId?: string,
+  ): Message => ({ id, clubId, authorId, body, sentAt: hoursAgo(now, hours), eventId });
+
+  // Channel messages. Announcements are merged into the same stream at render time.
+  const messages: Message[] = [
+    msg('m1', 'sibc', 'p-ethan', 52, 'Welcome to all our new members! 🎉 Project teams are announced right after kickoff, so make sure you’re there.', 'e1'),
+    msg('m2', 'sibc', 'p-jake', 26, 'Amazon is coming to campus. Recruiters from AWS and operations will be there, so bring a resume.', 'e16'),
+    msg('m3', 'sibc', 'p-maria', 1, 'Kickoff is coming up. Doors open 10 minutes early and there’s pizza. See you there!'),
+
+    msg('m4', 'investment-club', 'p-connor', 60, 'Pitch Night teams: final decks are due to me 24 hours before.', 'e5'),
+    msg('m5', 'investment-club', 'p-priya', 30, 'We’ll break down this week’s Fed decision live. 45 minutes, in and out.', 'e13'),
+    msg('m6', 'investment-club', 'p-priya', 5, 'The portfolio is up 2.1% since our last rebalance. Full recap at the next meeting.'),
+
+    msg('m7', 'irish-devs', 'p-sam', 40, 'Our AWS workshop is filling up fast. Bring a laptop; we’ll handle the rest.', 'e3'),
+    msg('m8', 'irish-devs', 'p-alex', 22, 'Hack Night this week: bring a side project or come find a team.', 'e11'),
+    msg('m9', 'irish-devs', 'p-sam', 2, 'Pizza order for the workshop is in. Vegetarian options included 🍕'),
+
+    msg('m10', 'japan-club', 'p-yuki', 48, 'Mochi Night is almost here! We’re making both sweet and savory.', 'e4'),
+    msg('m11', 'japan-club', 'p-emma', 12, 'Vote in the poll for Anime Night films. The top two win.', 'e14'),
+
+    msg('m12', 'habitat', 'p-grace', 44, 'Build day is on. The van leaves Main Circle 15 minutes before start.', 'e7'),
+    msg('m13', 'habitat', 'p-luke', 6, 'New volunteers: orientation is required before your first build.', 'e15'),
+
+    msg('m14', 'club-ultimate', 'p-noah', 70, 'Pickup is open to everyone. Bring a friend who’s never played.', 'e2'),
+    msg('m15', 'club-ultimate', 'p-noah', 8, 'Home scrimmage vs. Purdue. Come loud 📣', 'e10'),
+
+    msg('m16', 'irish-stage', 'p-olivia', 80, 'Auditions for the fall mainstage! One-minute monologue; sides at the door.', 'e8'),
+    msg('m17', 'irish-stage', 'p-ben', 15, 'The Improv Workshop is beginner friendly. Seriously, just show up.', 'e17'),
+
+    msg('m18', 'pre-law', 'p-sophia', 55, 'LSAT session this week with a certified tutor. Bring a practice test.', 'e6'),
+    msg('m19', 'pre-law', 'p-daniel', 18, 'Big Law panel: three alumni, open Q&A after.', 'e12'),
+    msg('m20', 'pre-law', 'p-sophia', 4, 'Moot court packets go out next week. Start thinking about partners.'),
+  ];
+
+  return {
+    clubs,
+    events: eventSeeds.map(toEvent),
+    announcements,
+    people,
+    members,
+    messages,
+    user,
+  };
 }
