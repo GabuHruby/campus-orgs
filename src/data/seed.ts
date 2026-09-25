@@ -507,7 +507,8 @@ export function createSeed(now: Date = new Date()): SeedData {
     name: 'Demo Student',
     // Pre-joined so My Groups isn't empty on first open.
     joinedClubIds: ['sibc', 'irish-devs', 'club-ultimate'],
-    rsvpedEventIds: ['e1'],
+    // A few RSVPs so the Calendar tab has something to show on first open.
+    rsvpedEventIds: ['e1', 'e3', 'e10', 'e16'],
   };
 
   const msg = (

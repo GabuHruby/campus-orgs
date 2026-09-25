@@ -1,4 +1,4 @@
-import { SECTION_ORDER, sectionFor, type DateSection } from '@/lib/dates';
+import { isSameDay, SECTION_ORDER, sectionFor, type DateSection } from '@/lib/dates';
 import type { Announcement, Club, Event } from '@/types/domain';
 
 export type EventSection = { title: DateSection; events: Event[] };
@@ -13,6 +13,23 @@ export function groupUpcomingEvents(events: Event[], now: Date = new Date()): Ev
     title,
     events: upcoming.filter((e) => sectionFor(e.startTime, now) === title),
   })).filter((s) => s.events.length > 0);
+}
+
+export type DayGroup = { day: string; events: Event[] };
+
+/** Upcoming events, soonest first, grouped by calendar day. `day` is the first event's start. */
+export function groupByDay(events: Event[], now: Date = new Date()): DayGroup[] {
+  const upcoming = events
+    .filter((e) => new Date(e.endTime).getTime() > now.getTime())
+    .sort((a, b) => a.startTime.localeCompare(b.startTime));
+
+  const groups: DayGroup[] = [];
+  for (const e of upcoming) {
+    const last = groups.at(-1);
+    if (last && isSameDay(last.day, e.startTime)) last.events.push(e);
+    else groups.push({ day: e.startTime, events: [e] });
+  }
+  return groups;
 }
 
 /** Newest first. */
