@@ -39,7 +39,7 @@ Joining a club on Discover or on a club page makes that club's events appear in 
 
 - **Expo** (latest stable SDK) with **Expo Router** (file-based routing, tabs layout).
 - **TypeScript, strict mode.** No `any`. All domain types defined in one place.
-- **NativeWind** for styling.
+- **StyleSheet + design tokens in `src/theme.ts`** for styling (NativeWind dropped: setup risk on SDK 57, no visual benefit for a demo). Palette: #011634, #164075, #205CA9, #2F79D8, #96C223.
 - **Web is the primary demo target**, built via `npx expo export --platform web` and hosted on **AWS Amplify Hosting** from a GitHub repo. It must also run on iOS/Android via Expo Go for a screen recording.
 - Local persistence of joins/RSVPs via AsyncStorage (it works on web too), so a viewer's actions survive a refresh.
 - The project was already scaffolded with `create-expo-app` (TypeScript + Expo Router template). Build on it; don't re-scaffold.
