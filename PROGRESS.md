@@ -13,11 +13,13 @@ _Last updated: Fri Sept 25_
 - Slide brief written and pasted into a claude.ai chat to draft the slide (file not kept in the repo).
 
 ## In progress / broken
+- **This Mac (Fri session):** web bundle failed because `async-storage` wasn't installed locally (it was added on the other computer). Fix is `nvm use && npm ci`, then `npx expo start --web --clear`. That fix hasn't been confirmed yet. This Mac's shell was also on Node 26, not 22.
 - Not yet tested in Expo Go. "Could not connect to the server" = campus Wi-Fi blocks phone→Mac. Use `npx expo start --tunnel` (or phone hotspot).
 - Seed message times can land at night (e.g. "12:31 AM").
 - Green (`cta`) is used beyond CTAs (announcement borders, calendar dots/bar, Wordmark, 2 club avatars); CLAUDE.md says CTAs only.
 
 ## Next steps (Tier 1 due Sat night)
+0. On this Mac: run `nvm use && npm ci` and confirm the web build loads.
 1. Polish (~30–45m): snap seed message times to daytime; trim green to CTAs only; phone-width pass.
 2. Test in Expo Go via tunnel.
 3. Redeploy + verify. **Before presenting/recording, reset demo state:** DevTools Console → `localStorage.removeItem('clubhq:user:v1'); location.reload()`.
@@ -36,4 +38,5 @@ _Last updated: Fri Sept 25_
 - Demo user starts pre-joined to 3 clubs and RSVP'd to 4 events so My Groups and Calendar aren't empty.
 - Messages/Profile popups use `Modal`, not `Alert.alert` (no-op on web). Sidebar is a custom `tabBar` for the same Tabs navigator.
 - **Both computers must use npm 11.** Lockfile drift between npm versions broke the Amplify build once.
+- **After pulling, if `package.json` or the lockfile changed, run `nvm use && npm ci`** before `expo start` (use `--clear` if Metro still fails). A dependency added on one machine isn't installed on the other. `npm ci` installs from the lockfile without rewriting it.
 - Tier 2 (Amplify Gen 2 backend) goes on a `tier2-backend` branch; merge only if it fully works.
