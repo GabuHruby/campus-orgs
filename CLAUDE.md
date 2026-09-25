@@ -8,7 +8,7 @@ I'm a freshman at Notre Dame doing a tryout deliverable for SIBC (Student Intern
 
 I chose the AWS Dev track. My deliverable is 1 slide scoping an MVP, plus this working demo app linked from the slide. The demo exists to impress project leaders. It must be polished, fast to open, and require zero setup (no login, no install).
 
-**Deadline: Monday, Sept 28, 11:59 PM. Today is Thursday, Sept 24.** Scope discipline matters more than feature count.
+**Deadline: Monday, Sept 28, 11:59 PM.** Tier 1 must be deployed by Saturday night. Scope discipline matters more than feature count.
 
 ## What we're building
 
@@ -33,17 +33,37 @@ Joining a club on Discover or on a club page makes that club's events appear in 
 - **Feed is ordered by upcoming date, NOT by recency or popularity.** Group it under section headers: "Today", "This Week", "Later". Hide past events.
 - **Announcements render differently from events**: slimmer text-only cards, visually distinct.
 - **No upvotes, comments, or likes.** This is not a social network.
-- Mobile-first, clean, modern. Keep a consistent color system and generous spacing. It must look good both on a phone and in a desktop browser (constrain the content width on desktop so it doesn't stretch).
+- Mobile-first, clean, modern, generous spacing. It must look good both on a phone and in a desktop browser (constrain the content width on desktop so it doesn't stretch).
+
+## Color palette
+
+All colors live in `src/theme.ts`. `palette` holds the 5 brand hex codes; `colors` gives each one a job (`primary`, `cta`, `text`, `border`, etc.). Screens and components use `colors` names only, never raw hex codes or `palette` directly (seed data may use `palette` for avatar colors).
+
+| Hex       | Role |
+|-----------|------|
+| `#011634` | Darkest navy (`text`, `sidebar`): primary text, headings, desktop sidebar |
+| `#164075` | Navy (`primaryDark`): sidebar active item, feed section headers, leader badge |
+| `#205CA9` | Blue (`primary`): primary buttons, active tab, segmented control, header tint, links |
+| `#2F79D8` | Bright blue (`accent`): highlights, hover/selected borders, info icons |
+| `#96C223` | Green (`cta`): accent for primary calls to action only (RSVP, Join, "Going" state) |
+
+Rules:
+- Green is the accent. Use it only for the main action on a screen, so RSVP/Join stand out.
+- Text on green must be `#011634`, not white. White on this green fails contrast.
+- White text is fine on `#011634`, `#164075`, and `#205CA9`.
+- Backgrounds, card surfaces, borders, and muted text use neutral grays defined in `colors`. The brand colors are for brand elements, not every surface.
+- Light mode only for the demo. No dark mode.
 
 ## Tech stack
 
-- **Expo** (latest stable SDK) with **Expo Router** (file-based routing, tabs layout).
+- **Expo** (SDK 57) with **Expo Router** (file-based routing, tabs layout).
 - **TypeScript, strict mode.** No `any`. All domain types defined in one place.
-- **StyleSheet + design tokens in `src/theme.ts`** for styling (NativeWind dropped: setup risk on SDK 57, no visual benefit for a demo). Palette: #011634, #164075, #205CA9, #2F79D8, #96C223.
-- **Web is the primary demo target**, built via `npx expo export --platform web` and hosted on **AWS Amplify Hosting** from a GitHub repo. It must also run on iOS/Android via Expo Go for a screen recording.
+- **Styling: React Native `StyleSheet.create` + design tokens in `src/theme.ts`** (colors, spacing, and other token sets). No NativeWind/Tailwind: it adds a Babel/Metro/Tailwind build layer that is a setup risk on a new SDK, with no visual benefit for a demo. `StyleSheet` needs no setup and behaves the same on web, iOS, and Android.
+- **Web is the primary demo target**, built via `npx expo export --platform web` and hosted on **AWS Amplify Hosting** from a GitHub repo (branch `master`). It must also run on iOS/Android via Expo Go for a screen recording.
+- Node 22, pinned in `.nvmrc` locally and in `amplify.yml`.
 - Local persistence of joins/RSVPs via AsyncStorage (it works on web too), so a viewer's actions survive a refresh.
-- The project was already scaffolded with `create-expo-app` (TypeScript + Expo Router template). Build on it; don't re-scaffold.
-- Set `"web": { "output": "single" }` in app.json so the web build is a single-page app (works with Amplify's rewrite rule).
+- The project was scaffolded with `create-expo-app` (TypeScript + Expo Router template). Build on it; don't re-scaffold.
+- `"web": { "output": "single" }` in app.json, so the web build is a single-page app (works with Amplify's rewrite rule).
 
 ### Architecture requirement
 
@@ -71,13 +91,14 @@ Put all data access behind a repository interface (e.g. `DataRepository` with me
 - Scaffold, types, seed data, mock repository
 - Tabs, feed with date sections, event cards, announcement cards
 - Club page, event detail, Join/Leave, RSVP with persistence
-- Deployed to Amplify Hosting with a public URL. This includes the build settings (`amplify.yml`) for the Expo web export, and a rewrite rule so client-side routes resolve to `index.html` instead of 404ing on refresh.
+- Deployed to Amplify Hosting with a public URL, using `amplify.yml` for the Expo web export and a rewrite rule so client-side routes resolve to `index.html` instead of 404ing on refresh.
 
 **Tier 2 (only if Tier 1 is fully done)**
 
 - Amplify Gen 2 backend: data model in TypeScript → AppSync + DynamoDB
 - AWS implementation of the repository, seeded with the same data
 - Still no login: use a fixed demo user id
+- Do this on a `tier2-backend` branch. Merge into `master` only if it fully works; otherwise Tier 1 stays live.
 
 **Explicitly out of scope:** authentication, budget tracker, push/email notifications, creating clubs or events from the UI, comments, search. These go on the slide as "roadmap", not in the code.
 
@@ -85,19 +106,15 @@ Put all data access behind a repository interface (e.g. `DataRepository` with me
 
 - **Before any multi-step task, outline the plan and wait for my approval before executing.**
 - **Before deleting, overwriting, or renaming existing files, show me what will change and wait for confirmation.**
-- I know React Native from building a recipe app, but I'm newer to Expo Router, NativeWind, and AWS Amplify. Briefly explain non-obvious decisions so I can defend them to the project leaders.
+- I know React Native from building a recipe app, but I'm newer to Expo Router and AWS Amplify. Briefly explain non-obvious decisions so I can defend them to the project leaders.
 - Work in small, testable steps. After each step, tell me how to run and verify it. Test the web build early, not just native, since web quirks are the main risk.
 - Suggest a git commit at each working milestone.
 - If something I ask for threatens the deadline, push back and say so.
 - At the end of each task, list the files you created or modified.
 
-## First task
-
-Propose the project structure (folders, key files, main types, and the repository interface) and a step-by-step build plan for Tier 1 with rough time estimates. Also suggest 3 app name options. Don't write code until I approve the plan.
-
 ## Session handoff
 
-I work on this project from two computers, and each Claude session starts fresh.
+I work on this project from two computers, and each Claude session starts fresh. The initial planning is done and the app name is clubHQ; the current state and plan live in PROGRESS.md.
 
 - At the start of every session: read PROGRESS.md and run `git log --oneline -10` before doing anything else.
 - When I say "wrap up": update PROGRESS.md with (1) what we finished, (2) what's in progress or broken, (3) the next steps, and (4) any decisions we made and why. Keep it short and replace outdated info rather than appending forever. Then suggest a commit message.
