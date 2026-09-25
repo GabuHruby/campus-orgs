@@ -1,34 +1,37 @@
 # clubHQ — Progress
 
-_Last updated: Thu Sept 24 (night)_
+_Last updated: Fri Sept 25 (early morning)_
 
 ## Done
-- Step 0–1: scaffold, route skeleton, SPA web output, `amplify.yml`, housekeeping.
-- Tabs: Home · Inbox · Messages · Profile. Messages/Profile show a "coming soon" popup.
-- Theme tokens (`src/theme.ts`) with the brand palette.
-- Responsive nav: bottom tabs < 768px; navy left sidebar ≥ 768px (icons only until 1100px, then labels). Popular clubs panel ≥ 1000px.
-- Data layer: domain types, runtime-relative seed data (8 clubs, 21 events, 8 announcements), `DataRepository` interface, `MockRepository`, `AppDataProvider` + `useAppData()`.
-- Home feed: Discover / My Groups toggle, "Latest news" announcements, events grouped Today / This Week / Later, Join chips on Discover, working RSVP toggle + counts. My Groups has a club row. Inbox lists announcements from joined clubs.
-- Verified: tsc, lint, web export, and headless-Chrome screenshots at 500 / 850 / 1400px widths.
+- Scaffold, SPA web output, `amplify.yml`, theme tokens, responsive nav (bottom tabs < 768px, navy sidebar ≥ 768px, Popular clubs panel ≥ 1000px).
+- **Amplify deploy works.** Public URL is live; SPA rewrite confirmed (refresh on deep links doesn't 404). Build fix: lockfile regenerated + Amplify pinned to npm 11.
+- Tabs: **Home · Inbox · Messages · Calendar · Profile** (Profile = "coming soon" popup).
+- Data layer: types in `src/types/domain.ts`, runtime-relative seed, `DataRepository` → `MockRepository` → `AppDataProvider`/`useAppData()`.
+- Home: Discover / My Groups, Latest news, events grouped Today / This Week / Later, Join chips, RSVP toggle + counts.
+- **Club channels** (`/messages/[id]`): club header + Join/Leave, team with role badges, chat stream (messages + announcements, day dividers, shared events with inline RSVP), locked footer "Only leaders and approved members can post". Messages tab = chat list of joined clubs. Every club link on Home opens the channel.
+- **Calendar**: 7-day strip (dots, tap to filter) + agenda of RSVP'd events; Going button cancels inline.
+- Verified: tsc, lint, web export, headless-Chrome screenshots at 500 / 1400px.
 
-## In progress / unverified
-- Amplify deploy: believed deployed, not confirmed. Check the public URL and the SPA rewrite rule (refresh on `/inbox` or `/club/sibc` must not 404).
-- Joins/RSVPs are in memory only; they reset on refresh until the persistence step.
-- Not yet tested in Expo Go on a phone.
-- Club page and event detail are still placeholders.
+## In progress / broken
+- Joins/RSVPs are in memory only; they reset on refresh (next step).
+- Not yet tested in Expo Go. "Could not connect to the server" = campus Wi-Fi blocks phone→Mac. Use `npx expo start --tunnel` (or phone hotspot).
+- Latest push (channels + calendar) not yet confirmed live on Amplify. Check `/messages/sibc` and `/calendar` with a refresh.
 
-## Next steps
-1. Confirm Amplify URL + rewrite rule; push to trigger a redeploy.
-2. Club page (header, Join/Leave, club events + announcements) and event detail (full info + RSVP).
-3. Persist joins/RSVPs with AsyncStorage inside `MockRepository`.
-4. Test in Expo Go; polish; redeploy.
+## Next steps (Tier 1 due Sat night)
+1. Persist joins/RSVPs with AsyncStorage inside `MockRepository` (~45m).
+2. Test in Expo Go via tunnel.
+3. Polish: snap seed message times to daytime hours (some show "12:31 AM"); general pass on phone.
+4. Redeploy + verify. Then the slide.
+5. Stretch (Sunday, only if above is done): lightweight Projects: seeded projects on club page + one invite in Inbox with Accept/Decline.
 
 ## Decisions
-- **App name: clubHQ.**
-- **Styling: StyleSheet + `theme.ts` tokens, no NativeWind** (setup risk on SDK 57 / Reanimated 4; the tokens give the same consistency).
-- **Palette roles:** #011634 text/sidebar, #164075 section headers/active sidebar item, #205CA9 primary, #2F79D8 accents, #96C223 CTAs only (RSVP) with navy text, since white on green fails contrast.
-- **Keep Inbox tab**; Messages/Profile are popups to look complete while staying out of scope. Popup uses `Modal`, not `Alert.alert` (no-op on web).
-- **Sidebar is a custom `tabBar` for the same Tabs navigator** (not a separate layout), so routes, icons, and tabPress listeners are shared between phone and desktop.
-- **Announcements in the feed:** the 2 newest appear under "Latest news" above the event sections; the full list lives in Inbox.
-- **"Today" events** use `soon()` in seed.ts: a few hours from now, or tomorrow afternoon if that would land late at night.
-- Lockfile `"peer": true` churn comes from different npm versions on the two computers. Use the same npm major on both.
+- **App name: clubHQ.** Styling: StyleSheet + `theme.ts` tokens, no NativeWind (SDK 57 setup risk).
+- **Palette roles:** #011634 text/sidebar, #164075 headers/active item/leader badge, #205CA9 primary, #2F79D8 accents, #96C223 CTAs only with navy text (white on green fails contrast).
+- **Scope for the demo = the home page and what's reachable from it.** Event detail page cut (tapping an event opens its club channel).
+- **Clubs are Reddit-like communities whose page is a chat channel.** Channel lives inside the Messages tab (`/messages/[id]`) so the desktop sidebar stays, with `unstable_settings.anchor = 'index'` + `router.push(..., { withAnchor: true })` so Back works from Home and deep links.
+- **Roles:** `leader` / `poster` (e.g. Marketing) / `member`. Leaders decide who can post. `Club.chatPermission` (`'posters' | 'everyone'`) is leader-controlled; the vision is everyone can chat, and the demo seeds all clubs as `'posters'`. Rule lives in `canPost()` in `src/lib/channel.ts`. Future: `sendMessage()` + composer; no model change needed.
+- **Roadmap (slide, not code):** posting composer, leader UI to grant posting rights, projects with leader invites, auth, month calendar view.
+- **Calendar is a week strip + agenda**, not a month grid (sparse and cramped on phones).
+- Demo user starts pre-joined to 3 clubs and RSVP'd to 4 events so My Groups and Calendar aren't empty.
+- Messages/Profile popups use `Modal`, not `Alert.alert` (no-op on web). Sidebar is a custom `tabBar` for the same Tabs navigator.
+- **Both computers must use npm 11.** Lockfile drift between npm versions broke the Amplify build once.
