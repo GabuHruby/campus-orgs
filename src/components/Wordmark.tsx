@@ -21,10 +21,10 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: 3 },
   club: { fontWeight: '800', letterSpacing: -0.5 },
   badge: {
-    backgroundColor: colors.cta,
+    backgroundColor: colors.primary,
     borderRadius: radius.sm,
     paddingHorizontal: 5,
     paddingVertical: 1,
   },
-  hq: { fontWeight: '900', color: colors.onCta, letterSpacing: -0.3 },
+  hq: { fontWeight: '900', color: colors.onDark, letterSpacing: -0.3 },
 });

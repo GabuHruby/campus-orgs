@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
   chipDay: { fontSize: 18, fontWeight: '800', color: colors.text },
   chipTextSelected: { color: colors.onDark },
   dot: { width: 6, height: 6, borderRadius: 3, marginTop: 2, backgroundColor: 'transparent' },
-  dotOn: { backgroundColor: colors.cta },
+  dotOn: { backgroundColor: colors.accent },
   group: { gap: spacing.md },
   row: {
     flexDirection: 'row',
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
   timeCol: { width: 64, gap: 2 },
   time: { fontSize: 14, fontWeight: '700', color: colors.text },
   endTime: { fontSize: 12, color: colors.textSubtle },
-  bar: { width: 3, alignSelf: 'stretch', borderRadius: 2, backgroundColor: colors.cta },
+  bar: { width: 3, alignSelf: 'stretch', borderRadius: 2, backgroundColor: colors.accent },
   info: { flex: 1, minWidth: 0, gap: 3 },
   title: { fontSize: 16, fontWeight: '700', color: colors.text },
   metaRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },

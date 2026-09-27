@@ -41,8 +41,19 @@ function soon(now: Date, hours: number, fallbackHour: number): Date {
   return at(now, d.getHours() < 8 && sameDay ? 0 : 1, fallbackHour);
 }
 
-function hoursAgo(now: Date, hours: number): string {
-  return new Date(now.getTime() - hours * HOUR).toISOString();
+/**
+ * `hours` before now, but never overnight: the 11 PM–8 AM window is squeezed into
+ * 8–11 PM the evening before, so posts keep distinct times. Only ever moves earlier,
+ * so it stays in the past.
+ */
+function daytimeAgo(now: Date, hours: number): string {
+  const d = new Date(now.getTime() - hours * HOUR);
+  const h = d.getHours();
+  if (h >= 8 && h < 23) return d.toISOString();
+  const minutesIntoNight = ((h + 1) % 24) * 60 + d.getMinutes(); // 0 at 11 PM, 539 at 7:59 AM
+  if (h < 8) d.setDate(d.getDate() - 1);
+  d.setHours(20, Math.floor(minutesIntoNight / 3), 0, 0);
+  return d.toISOString();
 }
 
 type EventSeed = Omit<Event, 'startTime' | 'endTime'> & { start: Date; durationHours: number };
@@ -128,7 +139,7 @@ export function createSeed(now: Date = new Date()): SeedData {
         'Pitch stocks, manage a real student portfolio, and learn markets from alumni in finance.',
       category: 'Business',
       emoji: '📈',
-      avatarColor: palette.green500,
+      avatarColor: palette.blue500,
       memberCount: 348,
       chatPermission: 'posters',
     },
@@ -172,7 +183,7 @@ export function createSeed(now: Date = new Date()): SeedData {
         'Competitive and casual ultimate. Practices three times a week, tournaments every fall and spring.',
       category: 'Sports',
       emoji: '🥏',
-      avatarColor: palette.green500,
+      avatarColor: palette.navy700,
       memberCount: 94,
       chatPermission: 'posters',
     },
@@ -442,7 +453,7 @@ export function createSeed(now: Date = new Date()): SeedData {
       authorId: 'p-maria',
       title: 'Project applications are open',
       body: 'Applications for fall project teams close Sunday at midnight. Short answers only; no resume required for first-years.',
-      postedAt: hoursAgo(now, 3),
+      postedAt: daytimeAgo(now, 3),
     },
     {
       id: 'a2',
@@ -450,7 +461,7 @@ export function createSeed(now: Date = new Date()): SeedData {
       authorId: 'p-alex',
       title: 'Free AWS credits for members',
       body: 'Every member can claim $100 in AWS credits for personal projects. Grab a code at Hack Night or DM an officer.',
-      postedAt: hoursAgo(now, 9),
+      postedAt: daytimeAgo(now, 9),
     },
     {
       id: 'a3',
@@ -458,7 +469,7 @@ export function createSeed(now: Date = new Date()): SeedData {
       authorId: 'p-ava',
       title: 'Team jerseys are in',
       body: 'Pick yours up after practice this week. Bring $25 cash or Venmo the treasurer.',
-      postedAt: hoursAgo(now, 20),
+      postedAt: daytimeAgo(now, 20),
     },
     {
       id: 'a4',
@@ -466,7 +477,7 @@ export function createSeed(now: Date = new Date()): SeedData {
       authorId: 'p-emma',
       title: 'Volunteers needed for Mochi Night',
       body: 'We need 6 people to help with setup at 7 PM. Volunteers get first pick of mochi fillings.',
-      postedAt: hoursAgo(now, 28),
+      postedAt: daytimeAgo(now, 28),
     },
     {
       id: 'a5',
@@ -474,7 +485,7 @@ export function createSeed(now: Date = new Date()): SeedData {
       authorId: 'p-daniel',
       title: 'Room change for LSAT session',
       body: 'This week’s LSAT Strategy Session has moved to Hesburgh Library, Room 218.',
-      postedAt: hoursAgo(now, 36),
+      postedAt: daytimeAgo(now, 36),
     },
     {
       id: 'a6',
@@ -482,7 +493,7 @@ export function createSeed(now: Date = new Date()): SeedData {
       authorId: 'p-luke',
       title: 'Waivers due Friday',
       body: 'Anyone signed up for Saturday’s build must submit the online waiver by Friday at 5 PM or you can’t come on site.',
-      postedAt: hoursAgo(now, 50),
+      postedAt: daytimeAgo(now, 50),
     },
     {
       id: 'a7',
@@ -490,7 +501,7 @@ export function createSeed(now: Date = new Date()): SeedData {
       authorId: 'p-connor',
       title: 'Pitch deck template posted',
       body: 'The updated stock pitch template is in the shared drive. Use it for Pitch Night so judging stays consistent.',
-      postedAt: hoursAgo(now, 70),
+      postedAt: daytimeAgo(now, 70),
     },
     {
       id: 'a8',
@@ -498,7 +509,7 @@ export function createSeed(now: Date = new Date()): SeedData {
       authorId: 'p-ben',
       title: 'Audition sides are posted',
       body: 'Sides for the fall show are posted outside Washington Hall and linked in our bio.',
-      postedAt: hoursAgo(now, 96),
+      postedAt: daytimeAgo(now, 96),
     },
   ];
 
@@ -518,7 +529,7 @@ export function createSeed(now: Date = new Date()): SeedData {
     hours: number,
     body: string,
     eventId?: string,
-  ): Message => ({ id, clubId, authorId, body, sentAt: hoursAgo(now, hours), eventId });
+  ): Message => ({ id, clubId, authorId, body, sentAt: daytimeAgo(now, hours), eventId });
 
   // Channel messages. Announcements are merged into the same stream at render time.
   const messages: Message[] = [
