@@ -100,7 +100,7 @@ Put all data access behind a repository interface (e.g. `DataRepository` with me
 - Still no login: use a fixed demo user id
 - Do this on a `tier2-backend` branch. Merge into `master` only if it fully works; otherwise Tier 1 stays live.
 
-**Explicitly out of scope:** authentication, budget tracker, push/email notifications, creating clubs or events from the UI, comments, search. These go on the slide as "roadmap", not in the code.
+**Explicitly out of scope:** authentication, budget tracker, push/email notifications, creating clubs or events from the UI, comments, full search (the demo only has a client-side club filter in the Find clubs popup). These go on the slide as "roadmap", not in the code.
 
 ## How I want you to work with me
 
