@@ -7,3 +7,9 @@
   --font-rounded: 'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif;
   --font-serif: Georgia, 'Times New Roman', serif;
 }
+
+/* Web only (Expo ignores global CSS on native). Text inputs show focus by
+   highlighting their container's border, so drop the browser's own ring. */
+input:focus-visible {
+  outline: none;
+}

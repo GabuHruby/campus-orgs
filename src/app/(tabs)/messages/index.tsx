@@ -9,6 +9,7 @@ import { ScreenHeader } from '@/components/ScreenHeader';
 import { useAppData } from '@/data/AppDataProvider';
 import { buildChannel, previewText } from '@/lib/channel';
 import { chatTimestamp } from '@/lib/dates';
+import { openFindClubs } from '@/lib/nav';
 import { colors, radius, spacing } from '@/theme';
 
 // Chat list: one row per joined club, most recent activity first.
@@ -59,7 +60,7 @@ export default function MessagesScreen() {
         <View style={styles.empty}>
           <Text style={styles.emptyTitle}>No channels yet</Text>
           <Text style={styles.emptyBody}>Join a club and its channel shows up here.</Text>
-          <PillButton label="Discover clubs" variant="primary" onPress={() => router.navigate('/')} />
+          <PillButton label="Discover clubs" variant="primary" onPress={openFindClubs} />
         </View>
       )}
     </Page>

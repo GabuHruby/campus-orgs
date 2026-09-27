@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { router, useLocalSearchParams } from 'expo-router';
+import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { AnnouncementCard } from '@/components/AnnouncementCard';
 import { EventCard } from '@/components/EventCard';
+import { FindClubsModal } from '@/components/FindClubsModal';
 import { MyClubsRow } from '@/components/MyClubsRow';
 import { Page } from '@/components/Page';
 import { PopularClubs } from '@/components/PopularClubs';
@@ -25,6 +27,8 @@ const LATEST_NEWS_LIMIT = 2;
 
 export default function HomeScreen() {
   const [feed, setFeed] = useState<Feed>('discover');
+  const [findOpen, setFindOpen] = useState(false);
+  const { findClubs } = useLocalSearchParams<{ findClubs?: string }>();
   const { clubs, events, announcements, user, clubsById } = useAppData();
 
   const isMine = feed === 'my-groups';
@@ -37,6 +41,25 @@ export default function HomeScreen() {
   const sections = groupUpcomingEvents(feedEvents);
   const myClubs = clubs.filter((c) => joined.includes(c.id));
 
+  // Find clubs switches to Discover first, so the popup opens over the campus-wide feed.
+  const openFindClubs = () => {
+    setFeed('discover');
+    setFindOpen(true);
+  };
+
+  // Other screens open the popup by navigating here with ?findClubs=1 (see lib/nav.ts).
+  // React to the param during render (React's pattern for state that follows a prop),
+  // then clear it from the URL so a refresh doesn't reopen it and the next request fires again.
+  const findRequested = findClubs === '1';
+  const [handledFindRequest, setHandledFindRequest] = useState(false);
+  if (findRequested !== handledFindRequest) {
+    setHandledFindRequest(findRequested);
+    if (findRequested) openFindClubs();
+  }
+  useEffect(() => {
+    if (findRequested) router.setParams({ findClubs: undefined });
+  }, [findRequested]);
+
   return (
     <Page aside={<PopularClubs />}>
       <ScreenHeader
@@ -46,7 +69,8 @@ export default function HomeScreen() {
       />
       <SegmentedControl options={FEED_OPTIONS} value={feed} onChange={setFeed} />
 
-      {isMine && <MyClubsRow clubs={myClubs} onFindMore={() => setFeed('discover')} />}
+      {isMine && <MyClubsRow clubs={myClubs} onFindMore={openFindClubs} />}
+      <FindClubsModal visible={findOpen} onClose={() => setFindOpen(false)} />
 
       {feedNews.length > 0 && (
         <View style={styles.group}>
